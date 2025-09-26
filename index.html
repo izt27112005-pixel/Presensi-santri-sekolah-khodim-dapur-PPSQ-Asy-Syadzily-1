@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Presensi Harian Kegiatan Santri Sekolah Khodim Dapur PPSQ Asy-Syadzily 1</title>
+
+<!-- Styling: hijau Nahdlatul Ulama, elegan & animasi -->
+<style>
+  :root{
+    --nu-green: #1b8a2b;   /* hijau NU */
+    --nu-dark: #0f5b18;
+    --muted: #f4f7f4;
+    --card: #ffffffcc;
+    --accent: #e6f7e6;
+    --shadow: 0 6px 18px rgba(11,66,18,0.12);
+    --glass: rgba(255,255,255,0.6);
+    --radius: 12px;
+  }
+  *{box-sizing:border-box;font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{
+    margin:0;
+    background: linear-gradient(180deg,#f6fbf6 0%, #eaf7ea 40%, #ffffff 100%);
+    color:#0b2e12;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:32px;
+  }
+
+  .container{
+    width:100%;
+    max-width:1150px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(240,255,240,0.6));
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow: var(--shadow);
+    transition: transform .35s cubic-bezier(.2,.9,.3,1);
+  }
+  .container:hover{ transform: translateY(-3px); }
+
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .logo{
+    width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--nu-green),var(--nu-dark));
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;
+    box-shadow: 0 6px 20px rgba(27,138,43,0.2); transform: rotate(-6deg);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%{transform: translateY(0) rotate(-6deg)}
+    50%{transform: translateY(-6px) rotate(-3deg)}
+    100%{transform: translateY(0) rotate(-6deg)}
+  }
+  h1{
+    margin:0;font-size:20px;line-height:1.15;
+  }
+  .subtitle{color:#2f6b2f;font-size:13px;margin-top:6px;}
+
+  .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .controls{display:flex;gap:8px;align-items:center;}
+
+  input[type="date"], select, button{
+    padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.08);
+    background:var(--card);outline:none;font-size:14px;
+    transition: transform .12s ease, box-shadow .12s;
+  }
+  input[type="date"]:focus, select:focus, button:focus{ box-shadow: 0 6px 18px rgba(11,66,18,0.06); transform: translateY(-1px); }
+
+  .btn{
+    background:linear-gradient(180deg,var(--nu-green),var(--nu-dark)); color:white;border:none;padding:9px 12px;border-radius:10px;cursor:pointer;
+    display:inline-flex;gap:8px;align-items:center;font-weight:600;
+  }
+  .btn.secondary{ background:transparent;color:var(--nu-dark); border:1px solid rgba(11,66,18,0.08); font-weight:600; }
+
+  .layout{display:grid;grid-template-columns: 1fr 320px; gap:18px;}
+  .card{ background:var(--card); border-radius:12px; padding:14px; box-shadow: 0 8px 24px rgba(0,0,0,0.03);}
+
+  table{width:100%;border-collapse:collapse;}
+  th, td{padding:10px 8px;text-align:left;border-bottom:1px dashed rgba(11,66,18,0.06);vertical-align:middle;font-size:14px;}
+  th{font-weight:700;color:var(--nu-dark);font-size:13px;}
+  .name{font-weight:600;color:#0b3d10;}
+  .activity-col{min-width:140px;text-align:center;}
+
+  /* Badge warna kriteria */
+  .badge{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px;color:white;min-width:76px;text-align:center}
+  .hadir{background:linear-gradient(180deg,#2ecc71,#1b8a2b);box-shadow:0 6px 12px rgba(27,138,43,0.14)}
+  .absen{background:linear-gradient(180deg,#ff6b6b,#d93b3b);box-shadow:0 6px 12px rgba(217,59,59,0.12)}
+  .sakit{background:linear-gradient(180deg,#ffa94d,#d67a00);box-shadow:0 6px 12px rgba(214,122,0,0.10)}
+  .izin{background:linear-gradient(180deg,#4db6ff,#0b79d6);box-shadow:0 6px 12px rgba(11,121,214,0.10)}
+
+  .select-pres{border-radius:10px;padding:6px 8px;border:1px solid rgba(0,0,0,0.06);min-width:110px;}
+
+  .small{font-size:12px;color:#2f6b2f}
+  .muted{color:#5b6b5b;font-size:13px}
+
+  /* sidebar */
+  .sidebar .section{margin-bottom:12px;}
+  .members-list{max-height:300px;overflow:auto;padding-right:6px;}
+  .member-item{display:flex;gap:8px;align-items:center;padding:8px;border-radius:10px;margin-bottom:6px;cursor:pointer}
+  .member-dot{width:40px;height:40px;border-radius:10px;background:linear-gradient(180deg,var(--nu-green),var(--nu-dark));display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+  .member-item:hover{background:linear-gradient(180deg, rgba(27,138,43,0.04), rgba(11,66,18,0.02))}
+
+  .controls-admin{display:flex;gap:8px;flex-wrap:wrap}
+  .danger{background:#fff0f0;color:#b33232;border:1px solid rgba(179,50,50,0.08)}
+
+  footer{margin-top:12px;text-align:right;color:#2f6b2f;font-weight:600;}
+
+  /* admin-only UI visibility */
+  .admin-only{display:none;}
+  .is-admin .admin-only{display:inline-flex;}
+
+  /* animations for saving */
+  .save-toast{
+    position:fixed;right:26px;bottom:26px;background:var(--nu-green);color:white;padding:10px 14px;border-radius:10px;box-shadow:0 8px 22px rgba(11,66,18,0.18);
+    transform: translateY(40px);opacity:0;transition: all .35s ease;
+  }
+  .save-toast.show{transform: translateY(0);opacity:1;}
+
+  /* responsive */
+  @media (max-width:960px){
+    .layout{grid-template-columns: 1fr; }
+    .sidebar{order:2}
+  }
+
+  /* fancy table header */
+  thead tr th { position: sticky; top:0; background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(240,255,240,0.9)); backdrop-filter: blur(4px);}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <header>
+    <div class="logo">PPSQ</div>
+    <div>
+      <h1>Presensi Harian Kegiatan Santri<br/><span class="subtitle">Sekolah Khodim Dapur PPSQ Asy-Syadzily 1</span></h1>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="controls">
+      <label class="muted">Pilih tanggal</label>
+      <input type="date" id="datePicker" />
+      <button class="btn secondary" id="viewerBtn" title="Masuk sebagai viewer (tidak bisa edit)">Mode Viewer</button>
+      <button class="btn" id="adminBtn" title="Masuk sebagai admin (memerlukan PIN)">Masuk Admin</button>
+    </div>
+
+    <div class="controls">
+      <div class="small muted" id="modeLabel">Mode: Viewer</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- main -->
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <strong>Daftar Kegiatan Harian</strong>
+            <div class="muted small">Shalat jamaah 5 waktu, sekolah, deresan maghrib, Madin</div>
+          </div>
+          <div class="small muted">Tanggal: <span id="currentDateReadable"></span></div>
+        </div>
+
+        <div style="overflow:auto;">
+          <table id="presensiTable">
+            <thead>
+              <tr>
+                <th style="width:240px">Nama Santri</th>
+                <th class="activity-col">Subuh</th>
+                <th class="activity-col">Dzuhur</th>
+                <th class="activity-col">Ashar</th>
+                <th class="activity-col">Maghrib</th>
+                <th class="activity-col">Isya</th>
+                <th class="activity-col">Sekolah</th>
+                <th class="activity-col">Deresan Maghrib</th>
+                <th class="activity-col">Madin</th>
+                <th style="width:110px;text-align:center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- rows generated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+          <div class="muted small">Keterangan warna: <span class="badge hadir">Hadir</span> <span class="badge izin">Izin</span> <span class="badge sakit">Sakit</span> <span class="badge absen">Absen</span></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn admin-only" id="saveBtn">Simpan Presensi</button>
+            <button class="btn secondary admin-only" id="resetDayBtn">Reset Hari Ini</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <strong>Ringkasan Mingguan</strong>
+        <div class="muted small">(Total tiap kriteria per anggota untuk minggu yang berisi tanggal yang dipilih)</div>
+        <div style="overflow:auto;margin-top:8px;">
+          <table id="summaryTable">
+            <thead><tr><th>Nama</th><th>Hadir</th><th>Izin</th><th>Sakit</th><th>Absen</th></tr></thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;text-align:left;color:#2f6b2f;font-weight:700">mengetahui: Miroabadi</div>
+    </div>
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <strong>Anggota</strong>
+            <div class="muted small">Tambah, edit, hapus anggota (admin)</div>
+          </div>
+          <div>
+            <button class="btn admin-only" id="addMemberBtn">Tambah Anggota</button>
+          </div>
+        </div>
+
+        <div class="members-list" id="membersList">
+          <!-- list generated by JS -->
+        </div>
+
+        <div style="border-top:1px dashed rgba(11,66,18,0.06);padding-top:8px;margin-top:8px">
+          <div class="section">
+            <strong>Pengaturan Admin</strong>
+          </div>
+          <div class="controls-admin">
+            <button class="btn admin-only" id="changePinBtn">Ganti PIN</button>
+            <button class="btn secondary admin-only danger" id="logoutBtn">Keluar Admin</button>
+            <button class="btn secondary" id="exportBtn" title="Ekspor data ke JSON (download)">Ekspor Data</button>
+            <button class="btn secondary" id="importBtn" title="Impor data JSON">Impor Data</button>
+            <input type="file" id="importFile" accept=".json" style="display:none"/>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <strong>Petunjuk Singkat</strong>
+        <ul style="margin:8px 0 0 18px;color:#365e34">
+          <li>Mode Viewer: hanya melihat, tidak bisa edit.</li>
+          <li>Mode Admin: dapat menambah/edit/hapus anggota & mengubah presensi.</li>
+          <li>Presensi bersifat harian; ubah tanggal untuk melihat tanggal lain.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="save-toast">Tersimpan</div>
+</div>
+
+<!-- Modal containers (simple) -->
+<div id="modalRoot"></div>
+
+<!-- Firebase (compat mode) -->
+<!-- Using compat build to preserve firebase.firestore() style -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<!-- Script: logic -->
+<script>
+/*
+  Presensi Harian — single-file app (Firestore + realtime onSnapshot)
+  - Data persistence: Firestore (collections: members, records, config/adminPin)
+  - Initial admin PIN: 'w22' (created in Firestore if missing)
+  - Viewer mode default.
+  - Real-time: onSnapshot listeners for members, records, and adminPin
+*/
+
+/* ---------- Utilities ---------- */
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+const fmtDate = d => {
+  const dd = ("0"+d.getDate()).slice(-2);
+  const mm = ("0"+(d.getMonth()+1)).slice(-2);
+  const yyyy = d.getFullYear();
+  return `${yyyy}-${mm}-${dd}`;
+};
+const readable = d => {
+  const dt = new Date(d);
+  return dt.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+};
+
+/* ---------- Constants & initial data ---------- */
+const ACTIVITIES = ['Subuh','Dzuhur','Ashar','Maghrib','Isya','Sekolah','Deresan Maghrib','Madin'];
+const PRESENCES = ['hadir','izin','sakit','absen']; // warna di CSS
+const DEFAULT_PIN  = 'w22'; // initial default, not shown anywhere in UI
+
+/* ---------- Firebase config (you provided) ---------- */
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCX-M-eNScPTqmtIOp7Zs1fFwkIg27VkF0",
+  authDomain: "data-jamaah-dapur.firebaseapp.com",
+  projectId: "data-jamaah-dapur",
+  storageBucket: "data-jamaah-dapur.firebasestorage.app",
+  messagingSenderId: "963461575071",
+  appId: "1:963461575071:web:af16848f8f54b99c178daa",
+  measurementId: "G-5X4FTYVR5S"
+};
+
+// Init Firebase (compat)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ---------- Application state ---------- */
+let state = {
+  isAdmin: false,
+  selectedDate: fmtDate(new Date()),
+  members: [], // {id, name}
+  records: {}, // records[date] = { memberId: { activity: presence, ... } , ... }
+  pin: null
+};
+
+/* ---------- UI helpers ---------- */
+function genId(){ return 'm_' + Math.random().toString(36).slice(2,9); }
+function showToast(text='Tersimpan'){ const t = qs('#toast'); t.textContent = text; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1800); }
+
+/* ---------- Firestore listeners for realtime ---------- */
+let membersUnsub = null;
+let recordsUnsub = null;
+let pinUnsub = null;
+
+function attachRealtimeListeners(){
+  // members collection
+  if(membersUnsub) membersUnsub();
+  membersUnsub = db.collection('members').orderBy('name').onSnapshot(snapshot=>{
+    const docs = [];
+    snapshot.forEach(doc => docs.push(doc.data()));
+    state.members = docs;
+    render();
+  }, err => {
+    console.error('members onSnapshot error', err);
+  });
+
+  // records collection (we'll listen to all records; small datasets expected)
+  if(recordsUnsub) recordsUnsub();
+  recordsUnsub = db.collection('records').onSnapshot(snapshot=>{
+    const recs = {};
+    snapshot.forEach(doc => {
+      recs[doc.id] = doc.data();
+    });
+    state.records = recs;
+    render();
+  }, err => {
+    console.error('records onSnapshot error', err);
+  });
+
+  // admin pin doc
+  if(pinUnsub) pinUnsub();
+  pinUnsub = db.collection('config').doc('adminPin').onSnapshot(doc=>{
+    if(doc.exists){
+      state.pin = doc.data().value;
+    } else {
+      // create default
+      db.collection('config').doc('adminPin').set({value: DEFAULT_PIN}).then(()=> {
+        state.pin = DEFAULT_PIN;
+      }).catch(err => console.error('set default pin err', err));
+    }
+  }, err => {
+    console.error('pin onSnapshot error', err);
+  });
+}
+
+/* ---------- Loading initial state (one-time snapshot is handled by listeners) ---------- */
+async function initDataIfEmpty(){
+  // ensure members exist
+  const ms = await db.collection('members').limit(1).get();
+  if(ms.empty){
+    const defaults = [
+      {id: genId(), name: 'Ahmad'},
+      {id: genId(), name: 'Budi'},
+      {id: genId(), name: 'Cahya'}
+    ];
+    const batch = db.batch();
+    defaults.forEach(m=>{
+      const ref = db.collection('members').doc(m.id);
+      batch.set(ref, m);
+    });
+    await batch.commit();
+  }
+  // ensure adminPin exists (will be created by listener fallback if missing)
+  const pinDoc = await db.collection('config').doc('adminPin').get();
+  if(!pinDoc.exists){
+    await db.collection('config').doc('adminPin').set({value: DEFAULT_PIN});
+  }
+}
+
+/* ---------- UI rendering ---------- */
+function render(){
+  document.body.classList.toggle('is-admin', state.isAdmin);
+  qs('#modeLabel').textContent = state.isAdmin ? 'Mode: Admin' : 'Mode: Viewer';
+  qs('#datePicker').value = state.selectedDate;
+  qs('#currentDateReadable').textContent = readable(state.selectedDate);
+
+  // members list (sidebar)
+  const ml = qs('#membersList');
+  ml.innerHTML = '';
+  state.members.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    div.innerHTML = `<div class="member-dot">${m.name.split(' ').map(x=>x[0]||'').slice(0,2).join('').toUpperCase()}</div>
+                     <div style="flex:1">
+                       <div style="display:flex;justify-content:space-between;align-items:center">
+                         <div style="font-weight:700;color:#0b3d10">${m.name}</div>
+                         <div class="muted small">${weeklyTotalsForMember(m.id).hadir ?? 0} hadir</div>
+                       </div>
+                     </div>`;
+    ml.appendChild(div);
+    // admin actions on click
+    div.addEventListener('click', ()=>{
+      if(state.isAdmin) openEditMemberModal(m);
+    });
+  });
+
+  // presensi table body
+  const tbody = qs('#tableBody');
+  tbody.innerHTML = '';
+  state.members.forEach(m=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>
+        <div class="name">${m.name}</div>
+        <div class="small muted">ID: ${m.id}</div>
+      </td>
+      ${ACTIVITIES.map(a=>`<td class="activity-col" data-activity="${a}" data-member="${m.id}"></td>`).join('')}
+      <td style="text-align:center">
+        <div class="small muted">Total hari ini</div>
+        <div id="todayCount_${m.id}" style="font-weight:700;color:#1b8a2b;margin-top:6px">0</div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  // fill each cell with select or badge depending on mode
+  state.members.forEach(m=>{
+    ACTIVITIES.forEach(act=>{
+      const cell = qs(`td[data-member="${m.id}"][data-activity="${act}"]`);
+      const current = (state.records[state.selectedDate] && state.records[state.selectedDate][m.id] && state.records[state.selectedDate][m.id][act]) || 'absen';
+      if(state.isAdmin){
+        // select editable
+        const sel = document.createElement('select');
+        sel.className = 'select-pres';
+        sel.dataset.member = m.id;
+        sel.dataset.activity = act;
+        PRESENCES.forEach(p=>{
+          const opt = document.createElement('option'); opt.value = p; opt.textContent = p.charAt(0).toUpperCase()+p.slice(1);
+          if(p===current) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        sel.addEventListener('change', async (e)=>{
+          try{
+            await setPresence(state.selectedDate, m.id, act, e.target.value);
+            updateTodayCount(m.id);
+          }catch(err){
+            alert('Gagal menyimpan presensi: '+err.message);
+            console.error(err);
+          }
+        });
+        cell.innerHTML = '';
+        cell.appendChild(sel);
+      } else {
+        // viewer: show colored badge only
+        cell.innerHTML = `<span class="badge ${current}" style="min-width:86px">${current.toUpperCase()}</span>`;
+      }
+    });
+    updateTodayCount(m.id);
+  });
+
+  // summary weekly
+  renderWeeklySummary();
+
+  // admin-only UI toggles
+  qsa('.admin-only').forEach(el=>{
+    el.style.display = state.isAdmin ? 'inline-flex' : 'none';
+  });
+  qs('#viewerBtn').style.display = state.isAdmin ? 'none' : 'inline-flex';
+  qs('#adminBtn').style.display = state.isAdmin ? 'none' : 'inline-flex';
+}
+
+/* ---------- Presensi operations (Firestore-backed) ---------- */
+function ensureRecordForDate(date){
+  if(!state.records[date]) state.records[date] = {};
+}
+function ensureMemberRecord(date, memberId){
+  ensureRecordForDate(date);
+  if(!state.records[date][memberId]){
+    state.records[date][memberId] = {};
+    ACTIVITIES.forEach(a=> state.records[date][memberId][a] = 'absen');
+  }
+}
+async function setPresence(date, memberId, activity, presence){
+  try{
+    // ensure local structure
+    ensureMemberRecord(date, memberId);
+    state.records[date][memberId][activity] = presence;
+    // write entire date doc
+    await db.collection('records').doc(date).set(state.records[date]);
+  }catch(err){
+    console.error('setPresence error', err);
+    throw err;
+  }
+}
+function updateTodayCount(memberId){
+  const rec = state.records[state.selectedDate] && state.records[state.selectedDate][memberId];
+  let cnt = 0;
+  if(rec){
+    for(const act of ACTIVITIES) if(rec[act] === 'hadir') cnt++;
+  }
+  const el = qs(`#todayCount_${memberId}`);
+  if(el) el.textContent = cnt;
+}
+
+/* ---------- Weekly summary ---------- */
+// week range: from monday to sunday that contains selectedDate
+function weekRangeOf(dateStr){
+  const d = new Date(dateStr);
+  const day = d.getDay(); // 0 Sun .. 6 Sat
+  const diffToMon = (day === 0) ? -6 : (1 - day); // make Monday start
+  const mon = new Date(d); mon.setDate(d.getDate() + diffToMon);
+  const days = [];
+  for(let i=0;i<7;i++){
+    const dd = new Date(mon); dd.setDate(mon.getDate()+i);
+    days.push(fmtDate(dd));
+  }
+  return days;
+}
+
+function weeklyTotalsForMember(memberId){
+  const days = weekRangeOf(state.selectedDate);
+  const totals = {hadir:0, izin:0, sakit:0, absen:0};
+  days.forEach(day=>{
+    if(state.records[day] && state.records[day][memberId]){
+      ACTIVITIES.forEach(a=>{
+        const p = state.records[day][memberId][a] || 'absen';
+        totals[p] = (totals[p]||0) + 1;
+      });
+    } else {
+      // no record => do not count
+    }
+  });
+  return totals;
+}
+
+function renderWeeklySummary(){
+  const tbody = qs('#summaryBody'); tbody.innerHTML = '';
+  state.members.forEach(m=>{
+    const t = weeklyTotalsForMember(m.id);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="font-weight:700">${m.name}</td>
+      <td>${t.hadir ?? 0}</td>
+      <td>${t.izin ?? 0}</td>
+      <td>${t.sakit ?? 0}</td>
+      <td>${t.absen ?? 0}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ---------- Admin actions: add/edit/delete members, change PIN (Firestore) ---------- */
+function openAddMemberModal(){
+  const modal = createModal('Tambah Anggota', `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label>Nama</label>
+      <input id="newMemberName" placeholder="Nama lengkap" />
+    </div>
+  `, [
+    {text:'Batal', cls:'secondary', onClick: closeModal},
+    {text:'Tambah', cls:'btn', onClick: async ()=>{
+      const name = qs('#newMemberName').value.trim();
+      if(!name){ alert('Isi nama anggota.'); return; }
+      const m = {id: genId(), name};
+      try{
+        await db.collection('members').doc(m.id).set(m);
+        // records for this member are created when admin edits presensi (not prefilled)
+        closeModal();
+        showToast('Anggota ditambahkan');
+      }catch(err){
+        alert('Gagal menambah anggota: '+err.message);
+        console.error(err);
+      }
+    }} 
+  ]);
+  document.querySelector('#newMemberName').focus();
+}
+
+function openEditMemberModal(member){
+  const modal = createModal('Edit Anggota', `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label>Nama</label>
+      <input id="editMemberName" value="${escapeHtml(member.name)}" />
+    </div>
+    <div style="margin-top:6px" class="muted small">Anda juga dapat menghapus anggota (beserta presensi jika ada).</div>
+  `, [
+    {text:'Hapus', cls:'danger', onClick: async ()=>{
+      if(!confirm('Hapus anggota ini? Tindakan ini tidak bisa dibatalkan.')) return;
+      try{
+        // delete member doc
+        await db.collection('members').doc(member.id).delete();
+        // remove member from all records
+        const recsSnap = await db.collection('records').get();
+        const batch = db.batch();
+        recsSnap.forEach(doc=>{
+          const data = doc.data();
+          if(data && data[member.id]){
+            delete data[member.id];
+            batch.set(db.collection('records').doc(doc.id), data);
+          }
+        });
+        await batch.commit();
+        closeModal();
+        showToast('Anggota dihapus');
+      }catch(err){
+        alert('Gagal menghapus anggota: '+err.message);
+        console.error(err);
+      }
+    }},
+    {text:'Batal', cls:'secondary', onClick: closeModal},
+    {text:'Simpan', cls:'btn', onClick: async ()=>{
+      const name = qs('#editMemberName').value.trim();
+      if(!name){alert('Nama tidak boleh kosong.'); return;}
+      try{
+        await db.collection('members').doc(member.id).update({name});
+        closeModal();
+        showToast('Perubahan disimpan');
+      }catch(err){
+        alert('Gagal menyimpan: '+err.message);
+        console.error(err);
+      }
+    }}
+  ]);
+  document.querySelector('#editMemberName').focus();
+}
+
+function openChangePinModal(){
+  const modal = createModal('Ganti PIN Admin', `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label>PIN Lama</label><input id="oldPin" type="password" />
+      <label>PIN Baru</label><input id="newPin" type="password" />
+      <label>Konfirmasi PIN Baru</label><input id="confPin" type="password" />
+      <div class="muted small">PIN tidak akan ditampilkan di layar. Ingat PIN baru Anda.</div>
+    </div>
+  `, [
+    {text:'Batal', cls:'secondary', onClick: closeModal},
+    {text:'Ganti PIN', cls:'btn', onClick: async ()=>{
+      const oldp = qs('#oldPin').value;
+      const newp = qs('#newPin').value;
+      const conf = qs('#confPin').value;
+      if(!oldp || !newp || !conf){ alert('Isi semua kolom.'); return; }
+      if(oldp !== state.pin){ alert('PIN lama salah.'); return; }
+      if(newp !== conf){ alert('Konfirmasi PIN tidak cocok.'); return; }
+      try{
+        await db.collection('config').doc('adminPin').set({value: newp});
+        alert('PIN berhasil diganti.');
+        closeModal();
+      }catch(err){
+        alert('Gagal mengganti PIN: '+err.message);
+        console.error(err);
+      }
+    }}
+  ]);
+}
+
+/* ---------- Authentication ---------- */
+function openAdminLogin(){
+  const modal = createModal('Login Admin', `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label>Masukkan PIN Admin</label>
+      <input id="pinInput" type="password" />
+      <div class="muted small">PIN tidak akan ditampilkan di lokasi manapun.</div>
+    </div>
+  `, [
+    {text:'Batal', cls:'secondary', onClick: closeModal},
+    {text:'Masuk', cls:'btn', onClick: ()=>{
+      const pin = qs('#pinInput').value;
+      if(pin === state.pin){
+        state.isAdmin = true; render(); closeModal();
+      } else {
+        alert('PIN salah.');
+      }
+    }}
+  ]);
+  document.querySelector('#pinInput').focus();
+}
+function logoutAdmin(){
+  state.isAdmin = false; render();
+}
+
+/* ---------- Modal utilities ---------- */
+function createModal(title, innerHTML, buttons=[]){
+  closeModal();
+  const root = qs('#modalRoot');
+  const overlay = document.createElement('div');
+  overlay.id = 'modalOverlay';
+  overlay.style.position = 'fixed';
+  overlay.style.left = 0; overlay.style.top = 0; overlay.style.right = 0; overlay.style.bottom = 0;
+  overlay.style.background = 'rgba(6,40,12,0.28)';
+  overlay.style.display = 'flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center';
+  overlay.style.zIndex = 9999;
+
+  const box = document.createElement('div');
+  box.style.width = '460px';
+  box.style.maxWidth = '94%';
+  box.style.background = 'white';
+  box.style.borderRadius = '12px';
+  box.style.padding = '16px';
+  box.style.boxShadow = '0 18px 48px rgba(0,0,0,0.18)';
+  box.innerHTML = `<h3 style="margin:0 0 8px 0">${title}</h3>
+                   <div style="margin-bottom:12px">${innerHTML}</div>
+                   <div style="display:flex;gap:8px;justify-content:flex-end" id="modalBtns"></div>`;
+  overlay.appendChild(box);
+  root.appendChild(overlay);
+
+  const btns = box.querySelector('#modalBtns');
+  buttons.forEach(b=>{
+    const btn = document.createElement('button');
+    btn.textContent = b.text;
+    btn.className = b.cls || 'btn';
+    btn.style.minWidth = '86px';
+    btn.addEventListener('click', b.onClick);
+    btns.appendChild(btn);
+  });
+
+  return overlay;
+}
+function closeModal(){ const m = qs('#modalOverlay'); if(m) m.remove(); }
+
+/* ---------- Export / Import (Firestore-aware) ---------- */
+async function exportData(){
+  try{
+    // fetch latest members & records direct from state (state is updated by realtime)
+    const payload = {
+      members: state.members,
+      records: state.records,
+      exportedAt: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'presensi_ppsq_export.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }catch(err){
+    alert('Gagal ekspor: '+err.message);
+    console.error(err);
+  }
+}
+
+async function importData(file){
+  const reader = new FileReader();
+  reader.onload = async function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      if(!obj.members || !obj.records){ alert('File tidak valid.'); return; }
+      if(!confirm('Impor akan menimpa data di server (Firestore). Lanjutkan?')) return;
+
+      // batch write members and records
+      const batch = db.batch();
+      // members
+      // clear existing members collection (careful)
+      const existingMembers = await db.collection('members').get();
+      existingMembers.forEach(doc => batch.delete(db.collection('members').doc(doc.id)));
+      for(const m of obj.members){
+        batch.set(db.collection('members').doc(m.id), m);
+      }
+      // records
+      const existingRecords = await db.collection('records').get();
+      existingRecords.forEach(doc => batch.delete(db.collection('records').doc(doc.id)));
+      for(const [date, rec] of Object.entries(obj.records)){
+        batch.set(db.collection('records').doc(date), rec);
+      }
+
+      await batch.commit();
+      alert('Impor selesai.');
+    }catch(err){
+      alert('Gagal membaca file JSON: '+err.message);
+      console.error(err);
+    }
+  }
+  reader.readAsText(file);
+}
+
+/* ---------- Utilities: escape html for modal inputs ---------- */
+function escapeHtml(s){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+/* ---------- Event wiring ---------- */
+function attachEvents(){
+  qs('#datePicker').addEventListener('change', (e)=>{
+    state.selectedDate = e.target.value;
+    render();
+  });
+  qs('#viewerBtn').addEventListener('click', ()=>{
+    state.isAdmin = false; render();
+  });
+  qs('#adminBtn').addEventListener('click', openAdminLogin);
+  qs('#logoutBtn').addEventListener('click', ()=>{
+    if(confirm('Keluar dari mode admin?')) logoutAdmin();
+  });
+  qs('#addMemberBtn').addEventListener('click', openAddMemberModal);
+  qs('#changePinBtn').addEventListener('click', openChangePinModal);
+  qs('#saveBtn').addEventListener('click', async ()=>{
+    try{
+      // Write all records in state to Firestore (rarely needed since setPresence writes per-change)
+      const batch = db.batch();
+      for(const [date, rec] of Object.entries(state.records)){
+        batch.set(db.collection('records').doc(date), rec);
+      }
+      await batch.commit();
+      showToast('Presensi tersimpan');
+    }catch(err){
+      alert('Gagal menyimpan: '+err.message);
+      console.error(err);
+    }
+  });
+  qs('#resetDayBtn').addEventListener('click', async ()=>{
+    if(!confirm('Reset semua presensi untuk tanggal ini?')) return;
+    try{
+      await db.collection('records').doc(state.selectedDate).delete();
+      showToast('Hari direset');
+    }catch(err){
+      alert('Gagal mereset hari: '+err.message);
+      console.error(err);
+    }
+  });
+  qs('#exportBtn').addEventListener('click', exportData);
+  qs('#importBtn').addEventListener('click', ()=> qs('#importFile').click());
+  qs('#importFile').addEventListener('change', (e)=>{
+    const f = e.target.files[0];
+    if(f) importData(f);
+    e.target.value = '';
+  });
+
+  // keyboard shortcut: Press "a" to open admin login (convenience)
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'a' && !state.isAdmin) openAdminLogin();
+  });
+}
+
+/* ---------- Init ---------- */
+async function init(){
+  attachEvents();
+  attachRealtimeListeners();
+  await initDataIfEmpty(); // ensure default members & pin exist if empty
+  // selectedDate default already set
+  render();
+}
+init();
+
+/* ---------- Extra: compute weekly totals for sidebar quick stat ---------- */
+/* already used in rendering */
+
+</script>
+</body>
+</html>
